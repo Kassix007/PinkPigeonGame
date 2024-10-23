@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com"> <!--font-family: 'Tilt Prism', cursive;-->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tilt+Prism&display=swap" rel="stylesheet">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"> <!-- font-family: 'Borel', cursive;-->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossrigin>
+<link href="https://fonts.googleapis.com/css2?family=Borel&display=swap" rel="stylesheet">
+
+    <meta charset="UTF-8">
+    <title>OurPinkPigeonHomePage</title>
+
+    <link rel="icon" type="image/png" href="images/1.png">
+
+    <script src="script.js" defer></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+	        width: 100vw;
+	        background: url('images/background-img1.jpeg') no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+        #game-container {
+            border: 2px solid #333;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+        #game-canvas {
+            display: block;
+            margin: 0 auto;
+        }
+        #info {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .btn {
+          font-family: 'Tilt Prism', cursive;
+            font-size: 1.2rem;
+            padding: 1rem 2.5rem;
+            border: none;
+            outline: none;
+            border-radius: 0.4rem;
+            cursor: pointer;
+            background-color: rgb(14, 14, 26);
+            color: rgb(234, 234, 234);
+            font-weight: 700;
+            transition: 0.6s;
+            box-shadow: 0px 0px 60px #1f4c65;
+           
+            }
+
+        .btn:active {
+            scale: 0.92;
+        }
+
+        .btn:hover {
+            background: rgb(2,29,78);
+            background: linear-gradient(270deg, rgba(2, 29, 78, 0.681) 0%, rgba(96, 235, 149, 0.873) 60%);
+            color: grey;
+        }
+        *,
+        *::before,
+        *::after {
+          box-sizing: border-box;
+        }
+
+        :root {
+          --color-primary:#00BE77;
+          --color-secondary: #00B26F;
+          --color-tertiary: #018553;
+          --color-quaternary: #007146;
+          --color-quinary: #00482C;
+          /*
+          --color-primary: #5192ED;
+          --color-secondary: #69A1F0;
+          --color-tertiary: #7EAEF2;
+          --color-quaternary: #90BAF5;
+          --color-quinary: #A2C4F5;
+          */
+        }
+
+        body12 {
+          min-height: 100vh;
+          font-family: canada-type-gibson, sans-serif;
+          font-weight: 300;
+          font-size: 1.25rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          overflow: hidden;
+          background-color: #eff8e2;
+        }
+
+        .content {
+          display: flex;
+          align-content: center;
+          justify-content: center;
+        }
+
+        .text_shadows {
+        text-shadow: 3px 3px 0 var(--color-secondary), 6px 6px 0 var(--color-tertiary),
+            9px 9px var(--color-quaternary), 12px 12px 0 var(--color-quinary);
+          font-family: 'Borel', cursive;
+          font-weight: 400;
+          font-size: calc(2rem + 5vw);
+          text-align: center;
+          margin: 0;
+          color: var(--color-primary);
+          color: transparent;
+          background-clip: text;
+          letter-spacing: 0.4rem;
+        }
+
+        
+
+
+
+        * {
+          padding: 0;
+          margin: 0;
+          box-sizing: border-box;
+        }
+
+        body34 {
+          background-color:  #151719;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: 100vh;
+        }
+        .waviy {
+          position: relative;
+          -webkit-box-reflect: below -20px linear-gradient(transparent, rgba(0,0,0,.2));
+          font-size: 60px;
+        }
+        .waviy span {
+          font-family: 'Tilt Prism', cursive;
+          font-weight:bold;
+          position: relative;
+          display: inline-block;
+          color:white;
+          animation: waviy 1s infinite;
+          animation-delay: calc(.1s * var(--i));
+          
+        }
+        @keyframes waviy {
+          0%,40%,100% {
+            transform: translateY(0)
+          }
+          20% {
+            transform: translateY(-20px)
+          }
+        }
+    </style>
+</head>
+<body>
+<div id="info">
+        <div class="content" style="width: 700px ; margin-left: auto; margin-right: auto;">
+        <h1 class="text_shadows" >PinkPigeon</h1>   
+    </div>
+        <div class="waviy">
+            <span style="--i:1">P</span>
+            <span style="--i:2">a</span>
+            <span style="--i:3">s</span>
+            <span style="--i:4"> </span>
+            <span style="--i:5">L</span>
+            <span style="--i:6">a</span>
+            <span style="--i:7">i</span>
+            <span style="--i:8">s</span>
+            <span style="--i:9">s</span>
+            <span style="--i:10"> </span>
+            <span style="--i:11">L</span>
+            <span style="--i:12">i</span>
+            <span style="--i:13"> </span>
+            <span style="--i:14">M</span>
+            <span style="--i:15">o</span>
+            <span style="--i:16">r</span>
+            <span style="--i:17">t</span>
+           </div>
+
+        <br>
+        <br>
+        <br>
+        <br>
+        <button class="btn" id="start-button">Start Game</button>
+    <script>
+        document.getElementById("start-button").addEventListener("click", function() {
+        // Change the window location to the URL of the other HTML file
+        window.location.href = "game.html";
+    });
+    </script>
+</body>
+</html>
