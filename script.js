@@ -15,6 +15,9 @@ let hs_val = document.querySelector('.hs_val');
 let hs_title = document.querySelector('.hs_title');
 
 let game_state = 'Start';
+let bird_dy = 0;
+let highscore = localStorage.getItem('highscore') || 0;
+
 img.style.display = 'none';
 message.classList.add('messageStyle');
 
@@ -22,70 +25,108 @@ function animateScript() {
     let position = 120;
     const interval = 150;
     setInterval(() => {
-        document.getElementById("bird-1").style.backgroundPosition =
-            `-${position}px 0px`;
+        document.getElementById("bird-1").style.backgroundPosition = `-${position}px 0px`;
         position = (position < 360) ? position + 120 : 120;
     }, interval);
 }
 
+// === START GAME ===
 function startGame() {
-    document.querySelectorAll('.pipe_sprite').forEach((e) => e.remove());
+    document.querySelectorAll('.pipe_sprite').forEach(e => e.remove());
     img.style.display = 'block';
-    animateScript();
     bird.style.top = '40vh';
+    bird_dy = 0;
     game_state = 'Play';
+    score = 0;
+
     message.innerHTML = '';
+    message.classList.remove('messageStyle');
     score_title.innerHTML = 'Score : ';
     score_val.innerHTML = '0';
     hs_title.innerHTML = 'High Score : ';
-    hs_val.innerHTML = localStorage.getItem('highscore') || 0;
-    message.classList.remove('messageStyle');
+    hs_val.innerHTML = highscore;
+
+    animateScript();
     play();
 }
 
-// Handle mobile tap to start or jump
-document.addEventListener('touchstart', () => {
-    if (game_state !== 'Play') {
-        startGame();
-    } else {
+// === GAME OVER ===
+function gameOver() {
+    game_state = 'End';
+    img.style.display = 'none';
+    sound_die.play();
+    message.innerHTML =
+        '<img src="images/dead.png" style="width:200px;height:200px;">' +
+        '<p style="color:green; font-size:25px; font-family:monospace;">Tonn Mort!!!</p>' +
+        '<p style="color:#77DD77; font-family:arial;">Game Over</p>' +
+        '<p style="color:green; font-size:25px; font-family:monospace;">Tap anywhere to restart</p>' +
+        `<p style="color:green; font-size:25px; font-family:monospace;">Your Score: ${score}</p>`;
+    message.classList.add('messageStyle');
+
+    // Wait for tap/click to restart
+    document.addEventListener('touchstart', restartGame, { once: true });
+    document.addEventListener('mousedown', restartGame, { once: true });
+}
+
+// === RESTART ===
+function restartGame() {
+    startGame();
+}
+
+// === JUMP CONTROL ===
+function jump() {
+    if (game_state === 'Play') {
         bird_dy = -7.6;
+    } else if (game_state !== 'Play') {
+        startGame();
     }
+}
+
+// Desktop key control
+document.addEventListener('keydown', (e) => {
+    if (e.key === ' ' || e.key === 'ArrowUp') jump();
+    if (e.key === 'Enter' && game_state !== 'Play') startGame();
+    if (e.key === 'Escape' && game_state === 'End') window.location.href = 'index.html';
 });
 
-let bird_dy = 0;
+// Mobile tap control
+document.addEventListener('touchstart', jump);
 
+// === MAIN GAME LOOP ===
 function play() {
     function move() {
         if (game_state != 'Play') return;
-        let pipe_sprite = document.querySelectorAll('.pipe_sprite');
-        pipe_sprite.forEach((element) => {
+
+        document.querySelectorAll('.pipe_sprite').forEach((element) => {
             let pipe_sprite_props = element.getBoundingClientRect();
             bird_props = bird.getBoundingClientRect();
 
             if (pipe_sprite_props.right <= 0) {
                 element.remove();
             } else {
-                if (bird_props.left < pipe_sprite_props.left + pipe_sprite_props.width &&
+                if (
+                    bird_props.left < pipe_sprite_props.left + pipe_sprite_props.width &&
                     bird_props.left + bird_props.width > pipe_sprite_props.left &&
                     bird_props.top < pipe_sprite_props.top + pipe_sprite_props.height &&
-                    bird_props.top + bird_props.height > pipe_sprite_props.top) {
-                    
+                    bird_props.top + bird_props.height > pipe_sprite_props.top
+                ) {
                     gameOver();
                     return;
-                } else {
-                    if (pipe_sprite_props.right < bird_props.left && 
-                        pipe_sprite_props.right + move_speed >= bird_props.left &&
-                        element.increase_score == '1') {
-                        score_val.innerHTML = +score_val.innerHTML + 1;
-                        score = score_val.innerHTML;
-                        if (score > (localStorage.getItem('highscore') || 0)) {
-                            hs_val.innerHTML = score;
-                            localStorage.setItem('highscore', score);
-                        }
-                        sound_point.play();
+                } else if (
+                    pipe_sprite_props.right < bird_props.left &&
+                    !element.scored
+                ) {
+                    element.scored = true;
+                    score++;
+                    score_val.innerHTML = score;
+                    if (score > highscore) {
+                        highscore = score;
+                        hs_val.innerHTML = highscore;
+                        localStorage.setItem('highscore', highscore);
                     }
-                    element.style.left = pipe_sprite_props.left - move_speed + 'px';
+                    sound_point.play();
                 }
+                element.style.left = pipe_sprite_props.left - move_speed + 'px';
             }
         });
         requestAnimationFrame(move);
@@ -95,6 +136,7 @@ function play() {
     function apply_gravity() {
         if (game_state != 'Play') return;
         bird_dy += grativy;
+
         if (bird_props.top <= 0 || bird_props.bottom >= background.bottom) {
             gameOver();
             return;
@@ -105,11 +147,12 @@ function play() {
     }
     requestAnimationFrame(apply_gravity);
 
-    let pipe_seperation = 20;
-    let pipe_gap = 35;
+    let pipe_seperation = 0;
+    const pipe_gap = 35;
 
     function create_pipe() {
         if (game_state !== 'Play') return;
+
         if (pipe_seperation > 115) {
             pipe_seperation = 0;
             let pipe_posi = Math.random() * 75 + 40;
@@ -124,29 +167,10 @@ function play() {
             pipe_sprite.className = 'pipe_sprite';
             pipe_sprite.style.bottom = Math.min(pipe_posi + pipe_gap, 130) + 'vh';
             pipe_sprite.style.left = '100vw';
-            pipe_sprite.increase_score = '1';
             document.body.appendChild(pipe_sprite);
         }
         pipe_seperation++;
         requestAnimationFrame(create_pipe);
     }
     requestAnimationFrame(create_pipe);
-}
-
-function gameOver() {
-    game_state = 'End';
-    message.innerHTML = '<img src="images/dead.png" style="width:200px;height:200px;">' +
-        '<p style="color:green; font-size:25px; font-family:monospace;">Tonn Mort!!!</p>' +
-        '<p style="color:#77DD77; font-family:arial;">Game Over</p>' +
-        '<p style="color:green; font-size:25px; font-family:monospace;">Tap to restart</p>' +
-        '<p style="color:green; font-size:25px; font-family:monospace;">Your Score: ' + score + '</p>';
-    message.classList.add('messageStyle');
-    img.style.display = 'none';
-    sound_die.play();
-
-    document.addEventListener('touchstart', restartGame, { once: true });
-}
-
-function restartGame() {
-    startGame();
 }
