@@ -30,7 +30,6 @@ function animateScript() {
     }, interval);
 }
 
-// === START GAME ===
 function startGame() {
     document.querySelectorAll('.pipe_sprite').forEach(e => e.remove());
     img.style.display = 'block';
@@ -50,7 +49,6 @@ function startGame() {
     play();
 }
 
-// === GAME OVER ===
 function gameOver() {
     game_state = 'End';
     img.style.display = 'none';
@@ -62,37 +60,25 @@ function gameOver() {
         '<p style="color:green; font-size:25px; font-family:monospace;">Tap anywhere to restart</p>' +
         `<p style="color:green; font-size:25px; font-family:monospace;">Your Score: ${score}</p>`;
     message.classList.add('messageStyle');
-
-    // Wait for tap/click to restart
-    document.addEventListener('touchstart', restartGame, { once: true });
-    document.addEventListener('mousedown', restartGame, { once: true });
 }
 
-// === RESTART ===
-function restartGame() {
-    startGame();
-}
-
-// === JUMP CONTROL ===
 function jump() {
     if (game_state === 'Play') {
         bird_dy = -7.6;
-    } else if (game_state !== 'Play') {
+    } else if (game_state === 'Start' || game_state === 'End') {
         startGame();
     }
 }
 
-// Desktop key control
+// === Control events (Bound ONCE) ===
 document.addEventListener('keydown', (e) => {
     if (e.key === ' ' || e.key === 'ArrowUp') jump();
-    if (e.key === 'Enter' && game_state !== 'Play') startGame();
+    if (e.key === 'Enter') jump();
     if (e.key === 'Escape' && game_state === 'End') window.location.href = 'index.html';
 });
-
-// Mobile tap control
 document.addEventListener('touchstart', jump);
+document.addEventListener('mousedown', jump);
 
-// === MAIN GAME LOOP ===
 function play() {
     function move() {
         if (game_state != 'Play') return;
